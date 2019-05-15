@@ -18,6 +18,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
 </head>
 <body>
 <div id="app">
@@ -51,6 +53,16 @@
                         <li class="nav-item">
                             <a href="/products" class="nav-link">View Product</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="/orders/create" class="nav-link">Create Order</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/orders" class="nav-link">View Orders</a>
+                        </li>
+
+
 
                     @endauth
                 </ul>
@@ -92,6 +104,15 @@
             </div>
         </div>
     </nav>
+
+    @if(session('success'))
+        <div class="container">
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Success!</strong> {{session('success')}}
+            </div>
+        </div>
+    @endif
 
     <main class="py-4">
         @yield('content')

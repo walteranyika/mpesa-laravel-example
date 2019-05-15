@@ -2,10 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
+use App\Order;
+use App\OrderDetail;
+use App\Product;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +22,8 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::orderBy('id','DESC')->get();
+        return view('orders.index', compact('orders'));
     }
 
     /**
@@ -23,7 +33,8 @@ class OrdersController extends Controller
      */
     public function create()
     {
-        //
+       $customers = Customer::all();
+       return view('orders.create', compact('customers'));
     }
 
     /**
@@ -34,7 +45,16 @@ class OrdersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'customer_id'=>'required|integer'
+        ]);
+
+        Order::create([
+            'customer_id'=>$request->customer_id,
+            'total'=>0
+        ]);
+
+        return redirect()->route('orders.index')->with('success','Order created');
     }
 
     /**
@@ -45,7 +65,9 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = Order::findorFail($id);
+        $products = Product::all();
+        return view('orders.update', compact('order','products'));
     }
 
     /**
@@ -68,7 +90,25 @@ class OrdersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'quantity'=>'required|integer|min:1'
+        ]);
+
+        $order = Order::findOrFail($id);
+        $product = Product::find($request->product_id);
+        $order->total += $product->price * $request->quantity;
+        $order->save();
+
+        OrderDetail::create([
+            'order_id'=>$id,
+            'product_id'=>$request->product_id,
+            'quantity'=>$request->quantity,
+            'total'=>$product->price * $request->quantity
+        ]);
+
+        return back()->with('success','Order Updated');
+
+
     }
 
     /**
@@ -79,6 +119,8 @@ class OrdersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return back()->with('success','Order Deleted');
     }
 }

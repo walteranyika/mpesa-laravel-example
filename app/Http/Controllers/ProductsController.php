@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('admin',['only'=>['create','store','destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +22,7 @@ class ProductsController extends Controller
         $products=Product::all();
         return view('products.index', compact('products'));
     }
+    //php artisan make:middleware AdminMiddleware
 
     /**
      * Show the form for creating a new resource.
