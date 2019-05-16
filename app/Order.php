@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable=['customer_id','total','shipped'];
+    protected $fillable=['user_id','customer_id','total','shipped'];
 
     public function customer()
     {
@@ -17,4 +17,5 @@ class Order extends Model
     {
       return $this->hasMany(OrderDetail::class);
     }
+    //php artisan make:migration add_user_id_to_orders
 }

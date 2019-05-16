@@ -52,6 +52,7 @@
                                          <td>{{$product->name}}</td>
                                          <td>{{$product->price}}</td>
                                          <td>
+                                             @can('update', $order)
                                              <form action="/orders/{{$order->id}}" method="post" class="form-inline">
                                                 @method('PUT')
                                                 @csrf
@@ -61,6 +62,7 @@
 
                                                 <button class="btn btn-success">Add</button>
                                              </form>
+                                             @endcan
                                          </td>
                                      </tr>
 

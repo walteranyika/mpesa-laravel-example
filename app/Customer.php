@@ -12,4 +12,6 @@ class Customer extends Model
     {
        return $this->hasMany(Order::class);
     }
+
+    //php artisan make:migration add_email_to_customers_table
 }

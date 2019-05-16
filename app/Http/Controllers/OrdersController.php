@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Jobs\SendEmailJob;
+use App\Mail\OrderMail;
 use App\Order;
 use App\OrderDetail;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrdersController extends Controller
 {
@@ -49,13 +53,26 @@ class OrdersController extends Controller
             'customer_id'=>'required|integer'
         ]);
 
-        Order::create([
+        $order=Order::create([
             'customer_id'=>$request->customer_id,
-            'total'=>0
+            'total'=>0,
+            'user_id'=>Auth::user()->id,
         ]);
+
+        $customer = Customer::find($request->customer_id);
+
+        $this->dispatch(new SendEmailJob($order, $customer));
 
         return redirect()->route('orders.index')->with('success','Order created');
     }
+    //policy
+    //php artisan make:policy OrderPolicy --model=Order
+
+    //start the queue
+    //php artisan queue:work
+
+
+    //php artisan make:job SendEmailJob
 
     /**
      * Display the specified resource.
@@ -69,6 +86,8 @@ class OrdersController extends Controller
         $products = Product::all();
         return view('orders.update', compact('order','products'));
     }
+
+    //php artisan make:mail OrderMail
 
     /**
      * Show the form for editing the specified resource.

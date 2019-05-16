@@ -33,11 +33,13 @@
                                     </td>
                                     <td>
                                         @if(!$order->shipped)
+                                            @can('delete', $order)
                                             <form action="/orders/{{$order->id}}" method="post">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button class="btn btn-danger">Remove</button>
                                             </form>
+                                            @endcan
                                         @endif
 
                                     </td>
