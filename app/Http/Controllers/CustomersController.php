@@ -42,7 +42,7 @@ class CustomersController extends Controller
     {
       $request->validate([
           'name'=>'required|min:5',
-          'phone'=>'required|unique:customers',
+          'phone'=>'required|unique:customers|regex:/(^(\+2547)[0-9]{8}$)/u',
           'address'=>'required|min:5',
       ]);
 

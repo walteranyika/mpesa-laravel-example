@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use AfricasTalking\SDK\AfricasTalking;
 use App\Customer;
 use App\Jobs\SendEmailJob;
+use App\Jobs\SendSmsJob;
 use App\Mail\OrderMail;
 use App\Order;
 use App\OrderDetail;
@@ -11,6 +13,7 @@ use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Safaricom\Mpesa\Mpesa;
 
 class OrdersController extends Controller
 {
@@ -61,10 +64,38 @@ class OrdersController extends Controller
 
         $customer = Customer::find($request->customer_id);
 
-        $this->dispatch(new SendEmailJob($order, $customer));
+     //   $this->dispatch(new SendEmailJob($order, $customer));
+
+        $message ="Your order number # ".$order->id." has been dispatched";
+
+       // $this->dispatch(new SendSmsJob($customer->phone, $message));
+        $this->pay();
 
         return redirect()->route('orders.index')->with('success','Order created');
     }
+
+    public function pay()
+    {
+        $mpesa = new Mpesa();
+        $BusinessShortCode="174379";
+        $LipaNaMpesaPasskey="bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+        $TransactionType="CustomerPayBillOnline";
+        $Amount="1";
+        $PartyA="254723740215";
+        $PartyB="174379";
+        $PhoneNumber="254723740215";
+        $CallBackURL="https://bbd7366a.ngrok.io/mpesa/confirm";
+        $AccountReference="Testing";
+        $TransactionDesc="Testing";
+        $Remarks="Testing";
+
+        $stkPushSimulation=$mpesa->STKPushSimulation($BusinessShortCode, $LipaNaMpesaPasskey, $TransactionType, $Amount, $PartyA, $PartyB, $PhoneNumber, $CallBackURL, $AccountReference, $TransactionDesc, $Remarks);
+
+        dd($stkPushSimulation);
+
+    }
+
+
     //policy
     //php artisan make:policy OrderPolicy --model=Order
 
@@ -73,6 +104,7 @@ class OrdersController extends Controller
 
 
     //php artisan make:job SendEmailJob
+    //php artisan make:job SendSmsJob
 
     /**
      * Display the specified resource.

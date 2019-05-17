@@ -22,3 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('customers','CustomersController');
 Route::resource('products','ProductsController');
 Route::resource('orders','OrdersController');
+
+
+Route::post('/mpesa/confirm', 'MpesaController@confirm');
+//php artisan make:controller MpesaController
