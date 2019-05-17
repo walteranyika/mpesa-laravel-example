@@ -248,9 +248,9 @@
       <path value="$PROJECT_DIR$/vendor/safaricom/mpesa" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="1028" />
-    <option name="y" value="92" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="350" />
+    <option name="y" value="66" />
     <option name="width" value="1016" />
     <option name="height" value="672" />
   </component>
